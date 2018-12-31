@@ -1,32 +1,25 @@
 import java.io.*;
 import java.util.*;
 
-/*
- *Pings a given host and computes the median of the time taken to ping.
- * This program uses a Runtime and Process to write terminal ping
- * command.
- */
-
 public class Ping{
     public static void main(String[] args) {
 
         System.out.println("Enter the host ip");
-        Scanner scan = new Scanner(System.in);
-        String ip = scan.next();
+        Scanner sc = new Scanner(System.in);
+        String ip = sc.next();
         System.out.println("Enter the number of times the server to be pinged");
-        int count = scan.nextInt();
+        int count = sc.nextInt();
         String timeString;
-        int sizeOfArray = count;
-        float[] time = new float[sizeOfArray];
+        float[] time = new float[count];
 
-        String pingCmd = "ping " + ip + " -c" + count;                          //string of ping command
+        String pingCmd = "ping " + ip + " -c" + count;
 
         try {
             Runtime r = Runtime.getRuntime();
             Process p = r.exec(pingCmd);
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String inputLine=in.readLine();                                 //reads irrelevant first line
-
+            String inputLine=in.readLine();
+            int size=count;
             for (int i = 0; (inputLine = in.readLine()) != null && count >0; i++) {
                 timeString = inputLine.substring(inputLine.lastIndexOf('=') + 1, inputLine.lastIndexOf(' '));
                 //extracting the substring containing time//
@@ -34,15 +27,14 @@ public class Ping{
                 count--;
             }
             in.close();
-            scan.close();
+            sc.close();
 
-            Arrays.sort(time);
-            //sort time data to compute median//
-            if(sizeOfArray%2 == 0){
-                System.out.println("\n" + "The median is " + (time[sizeOfArray/2]+time[(sizeOfArray/2)-1])/2 + " ms");
+            Arrays.sort(time);//since median can be calculated only on sorted data
+            if(size%2 == 0){
+                System.out.println("\n" + "The median is " + (time[size/2]+time[(size/2)-1])/2 + " ms");
             }
             else{
-                System.out.println("\n" + "The median is " + time[sizeOfArray/2] + " ms");
+                System.out.println("\n" + "The median is " + time[size/2] + " ms");
             }
         }
         catch (IOException e) {
